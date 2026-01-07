@@ -1,4 +1,11 @@
 /bin/
 /target/
 *.class
+
+# IDE
+.vscode
 .settings/
+
+# Documentation
+architecture.txt
+note.txt

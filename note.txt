@@ -1,6 +1,0 @@
-
-jdk
-C:\Program Files\Java\jdk-21
-
-jre
-D:\logiciel\eclipse\plugins\org.eclipse.justj.openjdk.hotspot.jre.full.win32.x86_64_21.0.8.v20250724-1412\jre

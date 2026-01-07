@@ -2,3 +2,6 @@
 /target/
 *.class
 .settings/
+
+architecture.txt
+note.txt

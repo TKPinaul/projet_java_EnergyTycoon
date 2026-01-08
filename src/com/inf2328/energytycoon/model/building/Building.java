@@ -14,7 +14,7 @@ public abstract class Building {
     protected double baseCost;
     protected double upgradeCost;
 
-    public Building(int maxLevel, double baseCost, double upgradeCost) {
+    public Building(double baseCost, double upgradeCost, int maxLevel) {
         this.level = 1;
         this.maxLevel = maxLevel;
         this.baseCost = baseCost;
@@ -55,6 +55,6 @@ public abstract class Building {
     }
 
     // Méthode de mise à jour du bâtiment (géré dans les classes filles)
-    public abstract void onUpgrade();
+    protected abstract void onUpgrade();
 
 }

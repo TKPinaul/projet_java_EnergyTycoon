@@ -1,7 +1,14 @@
 package com.inf2328.energytycoon.model.building;
-
 import java.util.Random;
 
+/**
+ * Class représentant une résidence
+
+ * @param energyNeed : besoin énergétique de la résidence
+ * @param satisfaction : niveau de satisfaction des résidents (0 - 100)
+ * @param MIN_ENERGY_NEED : niveau minimum autorisé
+ * @param MAX_ENERGY_NEED : niveau maximum autorisé
+ */
 public class Residence extends Building {
 
     private double energyNeed;
@@ -19,7 +26,7 @@ public class Residence extends Building {
 
     private double generateEnergyNeed() {
         return MIN_ENERGY_NEED +
-               (MAX_ENERGY_NEED - MIN_ENERGY_NEED) * random.nextDouble();
+                (MAX_ENERGY_NEED - MIN_ENERGY_NEED) * random.nextDouble();
     }
 
     // récupération du besoin énergétique
@@ -37,7 +44,7 @@ public class Residence extends Building {
         if (energyReceived < energyNeed) {
             satisfaction -= 10; // malus
         } else {
-            satisfaction += 2;  // récompence
+            satisfaction += 2; // récompence
         }
 
         // contrôle de la satisfaction

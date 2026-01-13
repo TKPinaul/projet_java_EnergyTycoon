@@ -6,8 +6,6 @@ import java.util.Random;
 
  * @param energyNeed : besoin énergétique de la résidence
  * @param satisfaction : niveau de satisfaction des résidents (0 - 100)
- * @param MIN_ENERGY_NEED : niveau minimum autorisé
- * @param MAX_ENERGY_NEED : niveau maximum autorisé
 */
 public class Residence extends Building {
 
@@ -15,20 +13,28 @@ public class Residence extends Building {
     private double satisfaction; // entre 0 et 100
     private final Random random = new Random();
 
-    private static final double MIN_ENERGY_NEED = 5.0;
-    private static final double MAX_ENERGY_NEED = 10.0;
-
     // Constructeur
     public Residence(double baseCost, double upgradeCost, int maxLevel) {
         super(baseCost, upgradeCost, maxLevel);
-        this.energyNeed = generateEnergyNeed();
+        this.energyNeed = generateEnergyNeedForLevel(level);
         this.satisfaction = 100.0;
     }
 
-    // Génération aléatoire du besoin énergétique
-    private double generateEnergyNeed() {
-        return MIN_ENERGY_NEED +
-                (MAX_ENERGY_NEED - MIN_ENERGY_NEED) * random.nextDouble();
+    // récupération du niveau maximum de besoin énergétique
+    public double generateEnergyNeedForLevel(int level) {
+        double min;
+        double max;
+
+        switch (level) {
+            case 1 -> { min = 5; max = 10; }
+            case 2 -> { min = 15; max = 35; }
+            default -> {
+                min = 20 * level;
+                max = 30 * level;
+            }
+        }
+
+        return min + (max - min) * random.nextDouble();
     }
 
     // récupération du besoin énergétique
@@ -43,7 +49,19 @@ public class Residence extends Building {
 
     // Augmentation du besoin énergétique au fil du temps
     public void increaseEnergyNeedOverTime() {
-        energyNeed *= 1.01; // augmentation de 1% / jour
+        energyNeed *= 1.03; // augmentation de 3% / jour
+
+        double maxAllowed = getMaxEnergyForLevel(level);
+        energyNeed = Math.min(energyNeed, maxAllowed);
+    }
+
+    // Maximum DÉTERMINISTE par niveau
+    private double getMaxEnergyForLevel(int level) {
+        return switch (level) {
+            case 1 -> 10;
+            case 2 -> 35;
+            default -> 30 * level;
+        };
     }
 
     // Méthode de mise à jour de la satisfaction en fonction de l'énergie
@@ -53,13 +71,7 @@ public class Residence extends Building {
         } else {
             satisfaction += 2; // récompence
         }
-
-        // contrôle de la satisfaction
-        if (satisfaction < 0) {
-            satisfaction = 0;
-        } else if (satisfaction > 100) {
-            satisfaction = 100;
-        }
+        satisfaction = Math.max(0, Math.min(100, satisfaction)); // retourne
     }
 
     // Seuil d'insatisfaction
@@ -70,7 +82,8 @@ public class Residence extends Building {
     // Augmentation du besoin énergétique lors d'un upgrade de la résidence
     @Override
     protected void onUpgrade() {
-        energyNeed *= 1.1;
+        if (satisfaction < 40) return;
+        energyNeed = generateEnergyNeedForLevel(level);
     }
 
     // Représentation de la résidence

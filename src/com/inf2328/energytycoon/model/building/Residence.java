@@ -41,10 +41,15 @@ public class Residence extends Building {
         return satisfaction;
     }
 
+    // Augmentation du besoin énergétique au fil du temps
+    public void increaseEnergyNeedOverTime() {
+        energyNeed *= 1.01; // augmentation de 1% / jour
+    }
+
     // Méthode de mise à jour de la satisfaction en fonction de l'énergie
     public void updateSatisfaction(double energyReceived) {
         if (energyReceived < energyNeed) {
-            satisfaction -= 10; // malus
+            satisfaction -= 15; // malus
         } else {
             satisfaction += 2; // récompence
         }
@@ -55,6 +60,11 @@ public class Residence extends Building {
         } else if (satisfaction > 100) {
             satisfaction = 100;
         }
+    }
+
+    // Seuil d'insatisfaction
+    public boolean isUnsatisfied() {
+        return satisfaction < 40;
     }
 
     // Augmentation du besoin énergétique lors d'un upgrade de la résidence

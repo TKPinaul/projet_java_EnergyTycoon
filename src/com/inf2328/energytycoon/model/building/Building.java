@@ -38,7 +38,7 @@ public abstract class Building {
 
     // Retourne le coût d'amélioration du bâtiment
     public double getUpgradeCost() {
-        return upgradeCost;
+        return upgradeCost * Math.pow(1.2, level - 1);
     }
 
     // Vérifie si le bâtiment peut être amélioré

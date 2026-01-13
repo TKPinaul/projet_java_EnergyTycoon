@@ -1,14 +1,14 @@
 package com.inf2328.energytycoon.model.building;
 import java.util.Random;
 
-/**
+/*
  * Class représentant une résidence
 
  * @param energyNeed : besoin énergétique de la résidence
  * @param satisfaction : niveau de satisfaction des résidents (0 - 100)
  * @param MIN_ENERGY_NEED : niveau minimum autorisé
  * @param MAX_ENERGY_NEED : niveau maximum autorisé
- */
+*/
 public class Residence extends Building {
 
     private double energyNeed;
@@ -18,12 +18,14 @@ public class Residence extends Building {
     private static final double MIN_ENERGY_NEED = 5.0;
     private static final double MAX_ENERGY_NEED = 10.0;
 
+    // Constructeur
     public Residence(double baseCost, double upgradeCost, int maxLevel) {
         super(baseCost, upgradeCost, maxLevel);
         this.energyNeed = generateEnergyNeed();
         this.satisfaction = 100.0;
     }
 
+    // Génération aléatoire du besoin énergétique
     private double generateEnergyNeed() {
         return MIN_ENERGY_NEED +
                 (MAX_ENERGY_NEED - MIN_ENERGY_NEED) * random.nextDouble();
@@ -55,8 +57,23 @@ public class Residence extends Building {
         }
     }
 
+    // Augmentation du besoin énergétique lors d'un upgrade de la résidence
     @Override
     protected void onUpgrade() {
-        energyNeed += generateEnergyNeed();
+        energyNeed *= 1.1;
     }
+
+    // Représentation de la résidence
+    @Override
+    public String toString() {
+        return "Residence{" +
+                "energyNeed=" + energyNeed +
+                ", satisfaction=" + satisfaction +
+                ", level=" + level +
+                ", maxLevel=" + maxLevel +
+                ", baseCost=" + baseCost +
+                ", upgradeCost=" + upgradeCost +
+                '}';
+    }
+
 }

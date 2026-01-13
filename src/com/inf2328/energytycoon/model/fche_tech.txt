@@ -1,6 +1,7 @@
-building : model représentant les bâtiments
+building : model représentant les bâtiments (entités physiques du système)
     - la classe Building est une classe abstraite contenant les attributs communs à tous les bâtiments
-    - 
+    - la classe Residence hérite de Building et représente les résidences (maison, centrales)
+    - la classe 
 
 
 city :

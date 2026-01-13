@@ -1,41 +1,41 @@
 package com.inf2328.energytycoon.model.building;
+import com.inf2328.energytycoon.model.energy.EnergyProduction;
+import com.inf2328.energytycoon.model.energy.EnergyType;
 
 /*
  * Class représentant une centrale électrique
  
- * @param energyOutput : production d'énergie de la centrale
- * @param initialOutput : production initiale d'énergie
+ * @param production : production d'énergie de la centrale
  */
 public class PowerPlant extends Building {
 
-    private double energyOutput;
+    private EnergyProduction production;
 
-    public PowerPlant(double baseCost, double upgradeCost, int maxLevel, double initialOutput) {
+    public PowerPlant(double baseCost, double upgradeCost, int maxLevel, EnergyType type, double initialOutput) {
         super(baseCost, upgradeCost, maxLevel);
-        this.energyOutput = initialOutput;
+        this.production = new EnergyProduction(type, initialOutput);
     }
 
     // Récupération de la production d'énergie
-    public double getEnergyOutput() {
-        return energyOutput;
+    public EnergyProduction getProduction() {
+        return production;
     }
 
     // Augmentation de la production d'énergie
     @Override
     protected void onUpgrade() {
-        energyOutput *= 1.2; // augmentation de 20%
+        production.increaseAmount(1.2); // augmente la production de 20%
     }
 
     // Représentation de la centrale électrique
     @Override
     public String toString() {
         return "PowerPlant{" +
-                "energyOutput=" + energyOutput +
+                "production=" + production +
                 ", level=" + level +
                 ", maxLevel=" + maxLevel +
                 ", baseCost=" + baseCost +
                 ", upgradeCost=" + upgradeCost +
                 '}';
     }
-    
 }

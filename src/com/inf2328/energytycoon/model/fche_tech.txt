@@ -2,7 +2,6 @@ building : model représentant les bâtiments
     - la classe Building est une classe abstraite contenant les attributs communs à tous les bâtiments
     - 
 
-
 city :
 
 energy :

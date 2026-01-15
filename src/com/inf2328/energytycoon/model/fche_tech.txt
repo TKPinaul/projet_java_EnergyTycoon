@@ -1,10 +1,12 @@
-building : model représentant les bâtiments (entités physiques du système)
-    - la classe Building est une classe abstraite contenant les attributs communs à tous les bâtiments
-    - la classe Residence hérite de Building et représente les résidences (maison, centrales)
-    - la classe 
+building : modèle représentant les bâtiments (entités physiques du système)
+    - La classe Building est une classe abstraite contenant les attributs communs à tous les bâtiments (coût de construction, coût d’amélioration, niveau maximal, niveau actuel…).
+    - La classe Residence hérite de Building et représente les résidences (maisons, appartements, immeubles).
+    - La classe PowerPlant hérite de Building et représente les centrales électriques.
 
-
-city :
+city : modèle représentant la ville
+    - la classe City contient les listes des résidences et des centrales
+    - la classe TimeCycle gère le cycle de temps (jours, semaines, mois)
+    - la classe GameState gère l'état du jeu (joueur, ville, cycle de temps)
 
 energy :
 

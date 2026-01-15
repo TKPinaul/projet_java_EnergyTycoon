@@ -3,7 +3,6 @@ building : model représentant les bâtiments (entités physiques du système)
     - la classe Residence hérite de Building et représente les résidences (maison, centrales)
     - la classe 
 
-
 city :
 
 energy :

@@ -35,8 +35,8 @@ public class Simulator {
         controller.buyResidence(2);
 
         // Ajout des centrales
-        city.addPowerPlant(new PowerPlant(EnergyType.SOLAR));
-        city.addPowerPlant(new PowerPlant(EnergyType.WIND));
+        controller.buildPowerPlant(new PowerPlant(EnergyType.SOLAR));
+        controller.buildPowerPlant(new PowerPlant(EnergyType.WIND));
 
         // Simulation du jeu
         while (!controller.isGameOver()) {

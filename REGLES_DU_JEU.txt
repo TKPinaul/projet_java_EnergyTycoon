@@ -1,0 +1,70 @@
+RÈGLES DU JEU - ENERGY TYCOON (v3.0)
+=====================================
+
+Le but du jeu est de construire une ville prospère en gérant l'offre et la demande énergétique.
+
+CENTRALES ELECTRIQUES DISPONIBLES
+---------------------------------
+    - CHARBON : prix de base : 400$       | réparation : 80   | Prod: 100 kW (Stable)
+    - SOLAIRE : prix de base : 200$       | réparation : 40   | Prod: 60 kW (Le jour uniquement)
+    - ÉOLIENNE : prix de base : 150$      | réparation : 30   | Prod: 30 kW (Variable selon le vent)
+    - NUCLÉAIRE : prix de base : 2000$    | réparation : 400  | Prod: 300 kW (Trés puissante et stable)
+
+RESIDENCES DISPONIBLES
+----------------------
+    - MAISON (niveau 1) : prix de base : 100$         | impot de base : 250$ | Cout de mise à jour : 400$
+    - VILLA (niveau 2) : prix de base : 500$          | impot de base : 310$ | Cout de mise à jour : 1500$
+    - IMMEUBLE (niveau 3) : prix de base : 2000$      | impot de base : 410$ | Cout de mise à jour : 3000$
+    - HOTEL (niveau 4) : prix de base : 5000$         | impot de base : 550$ | Cout de mise à jour : 5000$
+    - GRATTE-CIEL (niveau 5) : prix de base : 10000$  | impot de base : 730$ | Cout de mise à jour : max
+
+
+FONCTIONNEMENT DU JEU
+---------------------
+ • RÉSIDENCES
+    - Chaque résidence paie des impôts automatiquement.
+    - Un symbole ▲ apparaît si la consommation est 50% supérieure à la normale (besoin d'amélioration).
+    - La satisfaction baisse vite en cas de pénurie et remonte lentement si alimenté.
+    - L'amélioration nécessite une satisfaction > 60% et 2 jours d'ancienneté.
+
+ • CENTRALES
+    - Chaque niveau augmente la production de +20%.
+    - Une centrale a 5% de chance de tomber en panne chaque heure.
+    - Après 5 réparations, un symbole ▲ suggère une amélioration.
+    - Après réparation ou achat, la centrale est garantie sans panne pendant 1 jour.
+  👉 Condition d'amélioration : 3 jours d'ancienneté.
+
+ÉCONOMIE DU JOUEUR
+------------------
+• IMPÔTS est payé tous les 6H de façon automatique :
+  - Niveau 1 (Maison) :         tous les 6H : ~62$      | versement par jour : ~250$
+  - Niveau 5 (Gratte-Ciel) :    tous les 6H : ~182$     | versement par jour : ~730$
+
+• BONUS DE NUIT : Chaque minuit, gagnez [Nb Bâtiments x 10$] en cadeau.
+• ⚠️ ATTENTION : Si la satisfaction < 50%, vos revenus sont divisés par 2.
+
+ÉNERGIE & CONSOMMATION
+----------------------
+• CROISSANCE : Les besoins en électricité augmentent de 4% PAR JOUR.
+• PÉNURIE : Si production < demande, la satisfaction diminu (-20 points par heure).
+• RETOUR À LA NORMALE : La satisfaction remonte (+5 points par heure) quand le courant revient.
+
+INTERFACES
+----------
+
+    🔧 MAINTENANCE & ALERTES (LÉGENDE)
+    • ▲ (Triangle Orange) : SUGGESTION D'UPGRADE.
+    - Résidences : Elles consomment trop pour leur niveau actuel. Améliorez pour stabiliser.
+    - Centrales : Après 5 réparations, la centrale est usée. L'améliorer la rend plus robuste.
+    • CERCLE BARRE ROUGE ("PANNE") : La centrale est à l'arrêt.
+    • LIGNES BLEUES / POINTILLÉS : Le courant circule (bleu) ou est coupé (gris).
+    💡 ASTUCE : Utilisez le bouton "RÉPARER TOUT" pour remettre vos centrales en marche d'un coup.
+
+CONDITIONS DE DÉFAITE
+---------------------
+Le jeu s'arrête si :
+    1. Votre solde descend en dessous de 0$.
+    2. Plus de 40% de vos habitants sont malheureux pendant 2 jours.
+    3. Vous restez en pénurie d'énergie pendant plus de 12 heures consécutives.
+    4. Plus de 10% de vos bâtiments tombent à 0% de satisfaction (Colère totale).
+

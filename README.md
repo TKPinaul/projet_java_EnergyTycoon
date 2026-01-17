@@ -24,13 +24,13 @@ This project was developed through a collaborative effort between **TEPE Paulin 
 - **Resources & Power Plants**: Management of energy production logic and resource types.
 - **Building Types**: Definition and configuration of the different building categories.
 - **Documentation**: Author of the technical documentation and project guide.
-- **Shared Design**: Jointly defined business rules and UI layout.
+- **Shared Design**: Jointly defined business rules, UI layout, visuals, and animations.
 
-### **BOTRE LARE**
+### **BOTRE LARE Aboudou**
 - **Building Management**: Implementation of the building lifecycle and states.
 - **Simulation**: Development of the core simulation loop and timing logic.
 - **Player & City Model**: Contributed to the design of the `Player` and `City` data structures.
-- **Shared Design**: Jointly defined business rules and UI layout.
+- **Shared Design**: Jointly defined business rules, UI layout, visuals, and animations.
 
 ## 🎮 How to Run
 The application entry point is the `Main.java` file.

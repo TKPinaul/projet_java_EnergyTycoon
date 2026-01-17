@@ -25,6 +25,7 @@ public class TimeCycle {
     // Constructeur
     public TimeCycle() {
         hour = 8; // On commence à 8h le matin
+        hour = 8; // On commence à 8h le matin
         day = 1;
         week = 1;
         month = 1;

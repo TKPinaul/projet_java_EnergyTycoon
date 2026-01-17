@@ -45,15 +45,6 @@ public class City {
         powerPlants.add(p);
     }
 
-    public void clearBuildings() {
-        residences.clear();
-        powerPlants.clear();
-    }
-
-    public int getTotalBuildingsCount() {
-        return residences.size() + powerPlants.size();
-    }
-
     // Mise à jour de la ville
     public void update(TimeCycle time) {
         // Mise à jour de l'état des centrales

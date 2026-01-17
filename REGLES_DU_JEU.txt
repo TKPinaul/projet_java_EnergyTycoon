@@ -1,58 +1,70 @@
-Règles du Jeu - Energy Tycoon (Version de Développement)
+RÈGLES DU JEU - ENERGY TYCOON (v3.0)
+=====================================
 
-Voici un récapitulatif complet des mécaniques que j'ai implémentées pour notre simulation "Energy Tycoon". Ce fichier sert de référence pour le gameplay et l'équilibrage.
+Le but du jeu est de construire une ville prospère en gérant l'offre et la demande énergétique.
 
-====== 1. OBJECTIF ======
-Votre mission est de transformer un petit lotissement en une métropole énergétique. Vous devez équilibrer la production d'électricité, le bonheur des citoyens et la rentabilité financière. Une mauvaise gestion d'un seul de ces piliers peut mener à un Game Over immédiat.
+CENTRALES ELECTRIQUES DISPONIBLES
+---------------------------------
+    - CHARBON : prix de base : 400$       | réparation : 80   | Prod: 100 kW (Stable)
+    - SOLAIRE : prix de base : 200$       | réparation : 40   | Prod: 60 kW (Le jour uniquement)
+    - ÉOLIENNE : prix de base : 150$      | réparation : 30   | Prod: 30 kW (Variable selon le vent)
+    - NUCLÉAIRE : prix de base : 2000$    | réparation : 400  | Prod: 300 kW (Trés puissante et stable)
 
-====== 2. CYCLE DU TEMPS ======
-Le temps progresse par créneaux horaires : MATIN, JOUR, SOIR et NUIT.
-- 1 Journée complète = 4 créneaux (ticks).
-- Chaque passage au jour suivant peut déclencher des événements globaux (augmentation des besoins, calcul des finances).
+RESIDENCES DISPONIBLES
+----------------------
+    - MAISON (niveau 1) : prix de base : 100$         | impot de base : 250$ | Cout de mise à jour : 400$
+    - VILLA (niveau 2) : prix de base : 500$          | impot de base : 310$ | Cout de mise à jour : 1500$
+    - IMMEUBLE (niveau 3) : prix de base : 2000$      | impot de base : 410$ | Cout de mise à jour : 3000$
+    - HOTEL (niveau 4) : prix de base : 5000$         | impot de base : 550$ | Cout de mise à jour : 5000$
+    - GRATTE-CIEL (niveau 5) : prix de base : 10000$  | impot de base : 730$ | Cout de mise à jour : max
 
-====== 3. BÂTIMENTS ET NIVEAUX ======
 
-A. Résidences (5 Niveaux) :
-Le prestige de votre ville dépend de l'évolution de vos bâtiments. Chaque niveau augmente la population (taxes perçues) mais aussi la consommation électrique.
-- Types : Maison (Niv 1), Villa (Niv 2), Immeuble (Niv 3), Hôtel (Niv 4), Gratte-Ciel (Niv 5).
-- Coûts d'achat direct : De 100$ (Maison) à 10 000$ (Gratte-Ciel).
-- Évolution : Pour monter d'un niveau, un bâtiment doit avoir une satisfaction supérieure à 60% et être resté à son niveau actuel au moins 2 jours.
+FONCTIONNEMENT DU JEU
+---------------------
+ • RÉSIDENCES
+    - Chaque résidence paie des impôts automatiquement.
+    - Un symbole ▲ apparaît si la consommation est 50% supérieure à la normale (besoin d'amélioration).
+    - La satisfaction baisse vite en cas de pénurie et remonte lentement si alimenté.
+    - L'amélioration nécessite une satisfaction > 60% et 2 jours d'ancienneté.
 
-B. Centrales Électriques (3 Niveaux max) :
-- Éolienne / Solaire : Énergies renouvelables, variables selon le cycle du jour ou le vent.
-- Charbon / Nucléaire : Énergies stables avec une production massive.
-- Amélioration : Chaque upgrade augmente la production de base de 50%. Nécessite d'attendre 3 jours entre chaque niveau.
+ • CENTRALES
+    - Chaque niveau augmente la production de +20%.
+    - Une centrale a 5% de chance de tomber en panne chaque heure.
+    - Après 5 réparations, un symbole ▲ suggère une amélioration.
+    - Après réparation ou achat, la centrale est garantie sans panne pendant 1 jour.
+  👉 Condition d'amélioration : 3 jours d'ancienneté.
 
-====== 4. ÉCONOMIE ET TAXES ======
+ÉCONOMIE DU JOUEUR
+------------------
+• IMPÔTS est payé tous les 6H de façon automatique :
+  - Niveau 1 (Maison) :         tous les 6H : ~62$      | versement par jour : ~250$
+  - Niveau 5 (Gratte-Ciel) :    tous les 6H : ~182$     | versement par jour : ~730$
 
-1. Revenus Quotidiens :
-Les taxes sont perçues une fois par jour (le matin).
-- Revenu fixe par bâtiment : 30$ x (Niveau du bâtiment).
-- Impact de la satisfaction : 
-    * Si satisfaction > 50% : Revenu plein.
-    * Si satisfaction entre 25% et 50% : Revenu divisé par 2.
-    * Si satisfaction < 25% : Revenu divisé par 4.
+• BONUS DE NUIT : Chaque minuit, gagnez [Nb Bâtiments x 10$] en cadeau.
+• ⚠️ ATTENTION : Si la satisfaction < 50%, vos revenus sont divisés par 2.
 
-2. Coûts de Maintenance :
-L'entretien est débité chaque matin.
-- Résidences : 10% du coût de base x (Niveau du bâtiment).
-- Centrales : Environ 5% du coût de base x (Niveau du bâtiment).
+ÉNERGIE & CONSOMMATION
+----------------------
+• CROISSANCE : Les besoins en électricité augmentent de 4% PAR JOUR.
+• PÉNURIE : Si production < demande, la satisfaction diminu (-20 points par heure).
+• RETOUR À LA NORMALE : La satisfaction remonte (+5 points par heure) quand le courant revient.
 
-====== 5. SATISFACTION ET PÉNURIE ======
-La satisfaction est le cœur de votre score (0 à 100%).
-- Bonus : +1% par créneau si les besoins électriques sont totalement comblés.
-- Malus : En cas de manque, la satisfaction chute proportionnellement au déficit. Le malus est bien plus agressif que le bonus !
+INTERFACES
+----------
 
-====== 6. PANNES ET MAINTENANCE MANUELLE ======
-Le jeu simule l'usure du matériel.
-- Pannes : Chaque centrale a une faible chance (~5%) de tomber en panne à chaque créneau. Une centrale en panne produit 0 énergie.
-- Réparation : Les réparations ne sont JAMAIS automatiques. En tant que joueur, vous devez dépenser 20% du prix d'achat d'une centrale pour la remettre en ligne.
-- Sécurité : Une fois réparée, la centrale est "neuve" et bénéficie d'une immunité totale contre les pannes pendant 4 jours (15 créneaux).
+    🔧 MAINTENANCE & ALERTES (LÉGENDE)
+    • ▲ (Triangle Orange) : SUGGESTION D'UPGRADE.
+    - Résidences : Elles consomment trop pour leur niveau actuel. Améliorez pour stabiliser.
+    - Centrales : Après 5 réparations, la centrale est usée. L'améliorer la rend plus robuste.
+    • CERCLE BARRE ROUGE ("PANNE") : La centrale est à l'arrêt.
+    • LIGNES BLEUES / POINTILLÉS : Le courant circule (bleu) ou est coupé (gris).
+    💡 ASTUCE : Utilisez le bouton "RÉPARER TOUT" pour remettre vos centrales en marche d'un coup.
 
-====== 7. CONDITIONS DE GAME OVER ======
-Le jeu s'arrête si vous échouez dans l'un de ces domaines :
-1. Faillite : Votre solde monétaire tombe en dessous de 0$.
-2. Mécontentement : Plus de 40% de vos bâtiments ont une satisfaction inférieure à 40%.
-3. Blackout Prolongé : Vous subissez une pénurie de production pendant plus de 3 jours consécutifs (12 créneaux).
+CONDITIONS DE DÉFAITE
+---------------------
+Le jeu s'arrête si :
+    1. Votre solde descend en dessous de 0$.
+    2. Plus de 40% de vos habitants sont malheureux pendant 2 jours.
+    3. Vous restez en pénurie d'énergie pendant plus de 12 heures consécutives.
+    4. Plus de 10% de vos bâtiments tombent à 0% de satisfaction (Colère totale).
 
-Bonne gestion, Tycoon !

@@ -59,8 +59,8 @@ Les fichiers de sortie compilés seront générés dans le dossier `bin` par dé
 ## Documentation
 
 Des fichier txt ont été créés pour documenter le projet, dans ces fichiers vous trouverez:
-    - une description des règles mise en place (REGLES_DU_JEU.txt)
-    - une description de l'architecture du model (fiche_tech.txt)
+- une description des règles mise en place (REGLES_DU_JEU.txt)
+- une description de l'architecture du model (fiche_tech.txt)
 
 ## Auteurs
 

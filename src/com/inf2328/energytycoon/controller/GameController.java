@@ -5,151 +5,251 @@ import com.inf2328.energytycoon.model.building.Residence;
 import com.inf2328.energytycoon.model.city.City;
 import com.inf2328.energytycoon.model.city.GameState;
 import com.inf2328.energytycoon.model.city.TimeCycle;
+import com.inf2328.energytycoon.model.energy.EnergyType;
+import javax.swing.JOptionPane;
 
 /*
  * Contrôleur du jeu
-
- * @param gameState : l'état du jeu
- * @param gameOver : indique si le jeu est terminé
  */
 public class GameController {
     private final GameState gameState;
     private boolean gameOver = false;
+    private boolean paused = false;
+    private int totalTimeSlots = 0;
 
     public GameController(GameState gameState) {
         this.gameState = gameState;
     }
 
-    // Avancement du jeu (par créneau horaire)
     public void advanceTime() {
-
-        if (gameOver)
+        if (gameOver || paused)
             return;
-
-        // On garde le jour actuel pour savoir si on change de jour
+        totalTimeSlots++;
         TimeCycle time = gameState.getTimeCycle();
         int currentDay = time.getDay();
 
-        // Avancement du temps dans le GameState
         gameState.advanceTime();
+        int newHour = time.getHour();
 
-        // Si le jour a changé, on applique les revenus et la maintenance
-        if (time.getDay() != currentDay) {
-
-            // Augmentation de la difficulté
-            gameState.getCity().performDailyUpdates();
-
-            // Calcul des finances
-            double revenue = calculateDailyRevenue();
-            double maintenance = calculateDailyMaintenance();
-
-            // Mise à jour du compte
-            gameState.getPlayer().addMoney(revenue - maintenance);
-
-            System.out.println("--- End of Day " + currentDay + " --- Revenue: " + String.format("%.2f", revenue)
-                    + " | Maintenance: " + String.format("%.2f", maintenance));
+        // Paiement des impôts toutes les 6 heures (6h, 12h, 18h, 0h)
+        if (newHour % 6 == 0) {
+            double periodicRevenue = calculateDailyRevenue() / 4.0;
+            gameState.getPlayer().addMoney(periodicRevenue);
         }
 
-        // Vérification des règles de défaite
+        // Augmentation des besoins énergétiques toutes les 12h (0h et 12h)
+        if (newHour % 12 == 0) {
+            for (Residence r : gameState.getCity().getResidences()) {
+                r.increaseEnergyNeedOverTime();
+            }
+        }
+
+        if (time.getDay() != currentDay) {
+            // Bonus nocturne : nb bâtiments * 10
+            int count = gameState.getCity().getTotalBuildingsCount();
+            gameState.getPlayer().addMoney(count * 10.0);
+
+            gameState.getCity().performDailyUpdates();
+        }
         gameOver = gameState.updateAndCheckGameOver();
     }
 
-    // Calcul du revenu
     private double calculateDailyRevenue() {
-
         double revenue = 0;
         City city = gameState.getCity();
-
-        // Calcul du revenu
         for (Residence r : city.getResidences()) {
-            double baseIncome = 30 * r.getLevel(); // Revenu proportionnel au niveau
+            double baseIncome = (20 * Math.pow(r.getLevel(), 2)) + 230;
             double s = r.getSatisfaction();
-
-            // pénalités de satisfaction
-            if (s < 25) {
+            if (s < 25)
                 revenue += baseIncome * 0.25;
-            } else if (s < 50) {
+            else if (s < 50)
                 revenue += baseIncome * 0.5;
-            } else {
+            else
                 revenue += baseIncome;
-            }
         }
         return revenue;
     }
 
-    // Calcul des coûts journaliers
-    private double calculateDailyMaintenance() {
-        double cost = 0;
-        City city = gameState.getCity();
-
-        // 10% du coût de base * niveau pour les résidences
-        for (Residence r : city.getResidences()) {
-            cost += r.getBaseCost() * 0.10 * r.getLevel();
-        }
-
-        // coût de maintenance des centrales
-        for (PowerPlant p : city.getPowerPlants()) {
-            cost += p.getDailyMaintenanceCost();
-        }
-
-        return cost;
-    }
-
-    // Réparation d'une centrale
     public boolean repairPowerPlant(PowerPlant p) {
+        if (paused)
+            return false;
         double cost = p.getRepairCost();
-
         if (gameState.getPlayer().getMoney() >= cost) {
             gameState.getPlayer().addMoney(-cost);
             p.performMaintenance();
-            System.out.println("Reparation reussie pour " + cost + "$. La centrale est en securite pour 4 jours.");
             return true;
         } else {
-            System.out.println("Pas assez d'argent pour reparer! Besoin de " + cost + "$");
+            showFundsWarning(cost);
             return false;
         }
     }
 
-    // Achat d'une résidence supérieure
+    public void repairAllPowerPlants() {
+        if (paused)
+            return;
+        double totalCost = 0;
+        java.util.List<PowerPlant> toRepair = new java.util.ArrayList<>();
+
+        for (PowerPlant p : gameState.getCity().getPowerPlants()) {
+            if (p.isUnderMaintenance()) {
+                totalCost += p.getRepairCost();
+                toRepair.add(p);
+            }
+        }
+
+        if (toRepair.isEmpty())
+            return;
+
+        if (gameState.getPlayer().getMoney() >= totalCost) {
+            gameState.getPlayer().addMoney(-totalCost);
+            for (PowerPlant p : toRepair) {
+                p.performMaintenance();
+            }
+        } else {
+            showFundsWarning(totalCost);
+        }
+    }
+
     public boolean buyResidence(int targetLevel) {
-
-        Residence temp = new Residence();
-        double cost = temp.getPriceForLevel(targetLevel);
-
-        if (gameState.getPlayer().getMoney() >= cost) {
-            gameState.getPlayer().addMoney(-cost);
-            Residence newRes = new Residence(targetLevel);
-            gameState.getCity().addResidence(newRes);
-            gameState.getPlayer().addResidence(newRes);
-            System.out.println("Niveau de résidence achetée " + targetLevel + " (" + newRes + ") pour "
-                    + String.format("%.2f", cost) + "$");
-            return true;
-        } else {
-            System.out.println("Pas assez d'argent pour acheter le niveau " + targetLevel + "! Besoin de "
-                    + String.format("%.2f", cost) + "$");
+        if (paused)
             return false;
+        Residence temp = new Residence(targetLevel);
+        double cost = temp.getPriceForLevel(targetLevel);
+        if (gameState.getPlayer().getMoney() >= cost) {
+            if (autoPlaceBuilding(temp)) {
+                gameState.getPlayer().addMoney(-cost);
+                gameState.getCity().addResidence(temp);
+                gameState.getPlayer().addResidence(temp);
+                return true;
+            }
+        } else {
+            showFundsWarning(cost);
         }
+        return false;
     }
 
-    // Ajout d'une résidence (mode debug / gratuit ou géré ailleurs)
-    public void buildResidence(Residence r) {
-        gameState.getCity().addResidence(r);
-        gameState.getPlayer().addResidence(r);
+    public boolean buyPowerPlant(EnergyType type) {
+        if (paused)
+            return false;
+        PowerPlant newPP = new PowerPlant(type);
+        double cost = newPP.getBaseCost();
+        if (gameState.getPlayer().getMoney() >= cost) {
+            if (autoPlaceBuilding(newPP)) {
+                gameState.getPlayer().addMoney(-cost);
+                gameState.getCity().addPowerPlant(newPP);
+                gameState.getPlayer().addPowerPlant(newPP);
+                return true;
+            }
+        } else {
+            showFundsWarning(cost);
+        }
+        return false;
     }
 
-    // Ajout d'une centrale (mode debug / gratuit)
-    public void buildPowerPlant(PowerPlant p) {
-        gameState.getCity().addPowerPlant(p);
-        gameState.getPlayer().addPowerPlant(p);
+    private boolean autoPlaceBuilding(com.inf2328.energytycoon.model.building.Building b) {
+        City city = gameState.getCity();
+        for (int y = 0; y < 10; y++) {
+            for (int x = 0; x < 16; x++) {
+                boolean occupied = false;
+                for (com.inf2328.energytycoon.model.building.Building existing : city.getResidences()) {
+                    if (existing.getX() == x && existing.getY() == y) {
+                        occupied = true;
+                        break;
+                    }
+                }
+                if (!occupied) {
+                    for (com.inf2328.energytycoon.model.building.Building existing : city.getPowerPlants()) {
+                        if (existing.getX() == x && existing.getY() == y) {
+                            occupied = true;
+                            break;
+                        }
+                    }
+                }
+                if (!occupied) {
+                    b.setX(x);
+                    b.setY(y);
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 
-    // Vérification de la fin du jeu
+    public boolean upgradeBuilding(com.inf2328.energytycoon.model.building.Building b) {
+        if (paused)
+            return false;
+        double cost = b.getUpgradeCost();
+        if (b.canUpgrade()) {
+            if (gameState.getPlayer().getMoney() >= cost) {
+                gameState.getPlayer().addMoney(-cost);
+                b.upgrade();
+                return true;
+            } else {
+                showFundsWarning(cost);
+            }
+        }
+        return false;
+    }
+
+    private void showFundsWarning(double required) {
+        JOptionPane.showMessageDialog(null,
+                "Fonds insuffisants ! Requiert : " + String.format("%.2f", required) + "$",
+                "ERREUR TRESORERIE",
+                JOptionPane.WARNING_MESSAGE);
+    }
+
+    public void restartGame() {
+        gameState.getPlayer().setMoney(1200);
+        gameState.getPlayer().clearBuildings();
+        gameState.getCity().clearBuildings();
+        gameState.getTimeCycle().restart();
+
+        // Setup initial identique au lancement
+        Residence r1 = new Residence(1);
+        r1.setX(2);
+        r1.setY(2);
+        gameState.getCity().addResidence(r1);
+        gameState.getPlayer().addResidence(r1);
+
+        Residence r2 = new Residence(1);
+        r2.setX(4);
+        r2.setY(2);
+        gameState.getCity().addResidence(r2);
+        gameState.getPlayer().addResidence(r2);
+
+        PowerPlant p1 = new PowerPlant(EnergyType.SOLAR);
+        p1.setX(3);
+        p1.setY(5);
+        gameState.getCity().addPowerPlant(p1);
+        gameState.getPlayer().addPowerPlant(p1);
+
+        PowerPlant p2 = new PowerPlant(EnergyType.WIND);
+        p2.setX(5);
+        p2.setY(5);
+        gameState.getCity().addPowerPlant(p2);
+        gameState.getPlayer().addPowerPlant(p2);
+
+        gameOver = false;
+        totalTimeSlots = 0;
+    }
+
     public boolean isGameOver() {
         return gameOver;
     }
 
-    // Récupération de l'état du jeu
     public GameState getGameState() {
         return gameState;
+    }
+
+    public boolean isPaused() {
+        return paused;
+    }
+
+    public void setPaused(boolean paused) {
+        this.paused = paused;
+    }
+
+    public int getTotalTimeSlots() {
+        return totalTimeSlots;
     }
 }

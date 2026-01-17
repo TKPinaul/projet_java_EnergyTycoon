@@ -1,4 +1,5 @@
 package com.inf2328.energytycoon.model.player;
+
 import com.inf2328.energytycoon.model.building.Building;
 import com.inf2328.energytycoon.model.building.PowerPlant;
 import com.inf2328.energytycoon.model.building.Residence;
@@ -14,7 +15,7 @@ import java.util.List;
  * @param powerPlants : la liste des centrales
  */
 public class Player {
-    
+
     private double money;
     private final List<Residence> residences;
     private final List<PowerPlant> powerPlants;
@@ -44,25 +45,32 @@ public class Player {
         return false; // pas assez d'argent
     }
 
-    // Construction d'une résidence
+    // Construction d'une résidence (logique interne)
     public boolean buildResidence(Residence r) {
-
-        // Controle du solde
         if (spendMoney(r.getBaseCost())) {
             residences.add(r);
-            return true; // construction reussie
+            return true;
         }
-        return false; // construction echouée
+        return false;
+    }
+
+    // Ajout direct (pour le contrôleur)
+    public void addResidence(Residence r) {
+        residences.add(r);
+    }
+
+    // Ajout direct (pour le contrôleur)
+    public void addPowerPlant(PowerPlant p) {
+        powerPlants.add(p);
     }
 
     // Construction d'une centrale
     public boolean buildPowerPlant(PowerPlant p) {
-        // Controle du solde
         if (spendMoney(p.getBaseCost())) {
             powerPlants.add(p);
-            return true; // construction reussie
+            return true;
         }
-        return false; // construction echouée
+        return false;
     }
 
     // Amélioration d'un bâtiment

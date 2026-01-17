@@ -4,16 +4,16 @@ package com.inf2328.energytycoon.model.energy;
  * Class représentant la production d'énergie
  * 
  * @param type : type d'énergie
- * @param amount : quantité d'énergie
+ * @param baseAmount : quantité d'énergie
  */
 public class EnergyProduction {
 
     private EnergyType type;
-    private double amount;
+    private double baseAmount;
 
-    public EnergyProduction(EnergyType type, double amount) {
+    public EnergyProduction(EnergyType type, double baseAmount) {
         this.type = type;
-        this.amount = amount;
+        this.baseAmount = baseAmount;
     }
     
     // Récupération du type d'énergie
@@ -22,27 +22,27 @@ public class EnergyProduction {
     }
 
     // Récupération de la production d'énergie
-    public double getAmount() {
-        return amount;
+    public double getBaseAmount() {
+        return baseAmount;
     }
 
     // Modification de la production d'énergie
-    public void setAmount(double amount) {
-        this.amount = amount;
+    public void setBaseAmount(double baseAmount) {
+        this.baseAmount = baseAmount;
     }
 
     // Augmentation de la production d'énergie
     public void increaseAmount(double factor) {
-        amount *= factor;
+        baseAmount *= factor;
     }
 
     // Diminution de la production d'énergie
     public void decreaseAmount(double factor) {
-        amount /= factor;
+        baseAmount /= factor;
     }
 
     @Override
     public String toString() {
-        return type + ": " + String.format("%.2f", amount) + " units";
+        return type + ": " + String.format("%.2f", baseAmount) + " units";
     } 
 }

@@ -1,17 +1,24 @@
 building : modèle représentant les bâtiments (entités physiques du système)
-    - La classe Building est une classe abstraite contenant les attributs communs à tous les bâtiments (coût de construction, coût d’amélioration, niveau maximal, niveau actuel…).
-    - La classe Residence hérite de Building et représente les résidences (maisons, appartements, immeubles).
-    - La classe PowerPlant hérite de Building et représente les centrales électriques.
+    - Building (abstrait) : Gère les attributs communs, les niveaux (1 à 5), et les délais d'amélioration obligatoires (2-3 jours).
+    - Residence : Hérite de Building. Utilise ResidenceType pour ses caractéristiques. Gère la satisfaction des habitants.
+    - ResidenceType (enum) : Définit les types (Maison, Villa, Immeuble, Hôtel, Gratte-Ciel) avec leurs coûts et consommations fixes.
+    - PowerPlant : Hérite de Building. Gère les pannes, la maintenance manuelle et l'immunité post-réparation.
 
 city : modèle représentant la ville
-    - la classe City contient les listes des résidences et des centrales
-    - la classe TimeCycle gère le cycle de temps (jours, semaines, mois)
-    - la classe GameState gère l'état du jeu (joueur, ville, cycle de temps)
+    - City : Contient les listes de bâtiments. Gère la distribution d'énergie et les mises à jour de statut à chaque tick.
+    - TimeCycle : Gère la granularité temporelle (4 créneaux par jour : Matin, Jour, Soir, Nuit).
+    - GameState : Point d'entrée de l'état global. Vérifie les conditions de Game Over (faillite, insatisfaction, blackout).
 
-energy :
+energy : gestion de la production et demande
+    - EnergyType (enum) : COAL, SOLAR, WIND, NUCLEAR.
+    - EnergyProduction : Stocke la production de base. Calcul effectif selon le TimeOfDay (ex: Solaire à 0% la nuit).
 
-simulation :
+simulation : orchestration du jeu
+    - Simulator : Point d'entrée technique. Exécute la boucle principale, simule le passage du temps et les actions joueurs (réparations).
 
-player :
+player : identité du tycoon
+    - Player : Gère le porte-monnaie (argent) et maintient une liste synchronisée des bâtiments possédés pour l'affichage.
 
-finance :
+finance / logique économique : 
+    - Implémenté dans GameController. Calcule les taxes quotidiennes (proportionnelles au niveau) et les coûts de maintenance (10% du prix de base).
+    - Système de pénalités : Les revenus chutent drastiquement si la satisfaction des résidents est basse.

@@ -19,12 +19,12 @@ public class GameState {
     private int daysHighUnsatisfaction = 0;
     private int consecutiveShortageTicks = 0;
 
-    private static final double UNSATISFACTION_THRESHOLD = 40.0;
-    private static final double UNSATISFIED_RATIO = 0.4;
-    private static final int DAYS_UNSATISFIED_LIMIT = 2;
-
-    private static final int SHORTAGE_TICKS_LIMIT = 12;
-    private static final double COLLAPSED_RATIO = 0.1;
+    // Constantes
+    private static final double UNSATISFACTION_THRESHOLD = 40.0; // seuil de satisfaction
+    private static final double UNSATISFIED_RATIO = 0.4; // seuil de satisfaction
+    private static final int DAYS_UNSATISFIED_LIMIT = 2; // nombre de jours de satisfaction inférieure à 40%
+    private static final int SHORTAGE_TICKS_LIMIT = 12; // nombre de créneaux de pénurie d'énergie
+    private static final double COLLAPSED_RATIO = 0.1; // seuil de satisfaction
 
     public GameState(Player player, City city) {
         this.player = player;

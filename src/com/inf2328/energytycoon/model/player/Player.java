@@ -1,5 +1,6 @@
 package com.inf2328.energytycoon.model.player;
 
+
 import com.inf2328.energytycoon.model.building.Building;
 import com.inf2328.energytycoon.model.building.PowerPlant;
 import com.inf2328.energytycoon.model.building.Residence;
@@ -14,26 +15,36 @@ import java.util.List;
  * @param residences : la liste des résidences
  * @param powerPlants : la liste des centrales
  */
-public class Player {
 
+public class Player {
+        // Argent du joueur
     private double money;
     private final List<Residence> residences;
     private final List<PowerPlant> powerPlants;
-
+        // Constructeur du joueur
     public Player(double initialMoney) {
         this.money = initialMoney;
         this.residences = new ArrayList<>();
         this.powerPlants = new ArrayList<>();
     }
 
-    // Récupération de l'argent
+        // Récupération de l'argent
     public double getMoney() {
         return money;
     }
 
-    // Augmentation de l'argent
+        // Augmentation de l'argent
     public void addMoney(double amount) {
         money += amount;
+    }
+        // Définir l'argent
+    public void setMoney(double amount) {
+        this.money = amount;
+    }
+        // Nettoyer les bâtiments
+    public void clearBuildings() {
+        residences.clear();
+        powerPlants.clear();
     }
 
     // Décrémentation de l'argent

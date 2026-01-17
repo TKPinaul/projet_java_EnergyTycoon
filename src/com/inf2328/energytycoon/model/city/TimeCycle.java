@@ -39,10 +39,12 @@ public class TimeCycle {
         }
     }
 
+    // Récupération de l'heure
     public int getHour() {
         return hour;
     }
 
+    // Récupération de l'heure formatée
     public String getFormattedTime() {
         return String.format("%02dh00", hour);
     }
@@ -87,10 +89,12 @@ public class TimeCycle {
         return month;
     }
 
+    // Récupération du nombre total de jours
     public int getTotalDays() {
         return (month - 1) * 28 + (week - 1) * 7 + (day - 1);
     }
 
+    // Reinitialisation du cycle de temps
     public void restart() {
         hour = 8;
         day = 1;

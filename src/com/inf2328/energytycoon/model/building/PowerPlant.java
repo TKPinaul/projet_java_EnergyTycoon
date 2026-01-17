@@ -14,9 +14,10 @@ public class PowerPlant extends Building {
 
     private EnergyProduction production;
     private boolean underMaintenance = false;
+    private int repairCount = 0;
 
     // Niveau max de la centrale
-    public static final int POWER_PLANT_MAX_LEVEL = 3;
+    public static final int POWER_PLANT_MAX_LEVEL = 4;
 
     public PowerPlant(EnergyType type, int initialLevel) {
         super(getCostForType(type), getUpgradeCostForType(type), POWER_PLANT_MAX_LEVEL, initialLevel);
@@ -58,6 +59,21 @@ public class PowerPlant extends Building {
     // récupération de la production d'énergie
     public EnergyProduction getProduction() {
         return production;
+    }
+
+    public EnergyType getEnergyType() {
+        return production.getType();
+    }
+
+    public double getEnergyProduction() {
+        return production.getBaseAmount();
+    }
+
+    public double getMaintenanceLevel() {
+        // Retourne la santé (100% = parfait, 0% = besoin de réparation)
+        if (underMaintenance)
+            return 0;
+        return (double) Math.min(100, (safeOperationTime * 100.0) / 30.0);
     }
 
     // récupération de la production
@@ -144,7 +160,11 @@ public class PowerPlant extends Building {
     // Action du joueur : réparer / maintenir
     public void performMaintenance() {
         underMaintenance = false;
-        safeOperationTime = 15; // ~4 jours de tranquillité (4 créneaux par jour)
+        safeOperationTime = 30; // ~1.25 jours de tranquillité (24 slots par jour)
+        repairCount++;
+        if (repairCount >= 5 && level < maxLevel) {
+            upgradeSuggested = true;
+        }
     }
 
     // Nombre de jours requis pour améliorer la centrale
@@ -157,6 +177,7 @@ public class PowerPlant extends Building {
     @Override
     protected void onUpgrade() {
         production.increaseAmount(1.2); // augmente la production de 20%
+        repairCount = 0; // Reset repair count on upgrade
     }
 
     // Représentation de la centrale électrique

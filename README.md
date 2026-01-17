@@ -1,59 +1,72 @@
-# Energy Tycoon - City Management Simulator
+# Energy Tycoon - Simulateur de Gestion de Ville
 
-Energy Tycoon is a Java-based city simulation game where you act as the mayor of a growing city. Your primary goal is to manage the city's power grid while expanding residential areas and maintaining citizens' satisfaction.
+Energy Tycoon est un jeu de simulation urbaine développé en Java dans lequel le joueur incarne le maire d'une ville en pleine croissance. L'objectif principal est de gérer le réseau électrique de la ville tout en développant les zones résidentielles et en maintenant la satisfaction des citoyens.
 
-## 🚀 Features
+## 🚀 Fonctionnalités
 
-- **Complex Power Grid Management**: Choose between Solar, Wind, Coal, or Nuclear energy.
-- **Dynamic Economy**: Collect taxes every 6 hours and receive nightly bonuses.
-- **Urban Growth**: Manage 5 types of residences from small Houses to massive Skyscrapers.
-- **Real-time Simulation**: Includes a full time cycle (hours, days, months) and weather-dependent energy production.
-- **Maintenance & Upgrades**: Buildings require repairs and strategic upgrades to keep up with increasing energy demand.
-- **Survival Mechanics**: Manage citizens' satisfaction to avoid Game Over.
+- **Gestion Complexe du Réseau Électrique** : Choisir entre les énergies Solaire, Éolienne, Charbon ou Nucléaire.
+- **Économie Dynamique** : L'impôts est collecté toutes les 6 heures et le joueur reçoit des bonus nocturnes (le nombre total de batiments x 10 en argent).
 
-## 🛠️ Technical Stack
-- **Language**: Java 17+
-- **GUI**: Swing (Graphics2D vector-based rendering)
-- **Architecture**: Model-View-Controller (MVC)
+- **Gestion des Bâtiments** : 5 types de résidences sont disponibles, de la petite Maison au Gratte-ciel massif.
 
-## 👥 Project Team & Collaboration
+- **Gestion des Ressources** : 4 types de ressources sont disponibles, Solaire, Éolienne, Charbon ou Nucléaire.
 
-This project was developed through a collaborative effort between **TEPE Paulin Kossi** and **BOTRE LARE Aboudou**, working both in-person and remotely. Due to our decentralized workflow, commit frequencies may vary between members.
+- **Simulation en Temps Réel** : Inclut un cycle temporel complet (heures, jours, mois) et une production d'énergie dépendante de la météo (des variations des valeurs produites par les ressources, vent, soleil, ... ont été introduites).
+
+- **Maintenance et Améliorations** : Les bâtiments nécessitent des réparations (les centrales électriques ont une probabilité de tomber en panne) et des améliorations stratégiques pour répondre à la demande énergétique croissante.
+
+- **Mécaniques de Survie** : Gérer la satisfaction des citoyens pour éviter le Game Over.
+
+## 🛠️ Pile Technique
+- **Langage** : Java 17+
+
+- **Interface Graphique** : Swing (rendu vectoriel Graphics2D)
+
+- **Architecture** : Modèle-Vue-Contrôleur (MVC)
+
+## 👥 Équipe de Projet & Collaboration
+
+Ce projet a été développé grâce à un effort collaboratif entre **TEPE Paulin Kossi** et **BOTRE LARE Aboudou**, en travaillant à la fois en présentiel et à distance. En raison de notre flux de travail décentralisé, la fréquence des commits peut varier d'un membre à l'autre.
 
 ### **TEPE Paulin Kossi**
-- **Resources & Power Plants**: Management of energy production logic and resource types.
-- **Building Types**: Definition and configuration of the different building categories.
-- **Documentation**: Author of the technical documentation and project guide.
-- **Shared Design**: Jointly defined business rules, UI layout, visuals, and animations.
+- **Ressources & Centrales Électriques** : Gestion de la logique de production d'énergie et des types de ressources.
+- **Types de Bâtiments** : Définition et configuration des différentes catégories de bâtiments.
+- **Documentation** : Rédaction de la documentation technique et du guide de projet.
+- **Conception Partagée** : Définition conjointe des règles métier, de la mise en page de l'interface utilisateur, des visuels et des animations.
 
 ### **BOTRE LARE Aboudou**
-- **Building Management**: Implementation of the building lifecycle and states.
-- **Simulation**: Development of the core simulation loop and timing logic.
-- **Player & City Model**: Contributed to the design of the `Player` and `City` data structures.
-- **Shared Design**: Jointly defined business rules, UI layout, visuals, and animations.
+- **Gestion des Bâtiments** : Implémentation du cycle de vie et des états des bâtiments.
+- **Simulation** : Développement de la boucle principale de simulation et de la logique temporelle.
+- **Modèle Joueur & Ville** : Contribution à la conception des structures de données `Player` et `City`.
+- **Conception Partagée** : Définition conjointe des règles métier, de la mise en page de l'interface utilisateur, des visuels et des animations.
 
-## 🎮 How to Run
-The application entry point is the `Main.java` file.
+## 🎮 Comment Exécuter
+Le point d'entrée de l'application est le fichier `Main.java`.
 
-1. Ensure you have Java 17 or higher installed.
-2. Compile the source files.
-3. Run `src/com/inf2328/energytycoon/Main.java`.
+1. Assurez-vous d'avoir installé Java 17 ou une version supérieure.
+2. Compilez les fichiers sources.
+3. Exécutez `src/com/inf2328/energytycoon/Main.java`.
 
-## Folder Structure
+## Structure des Dossiers
 
-The workspace contains two folders by default, where:
+L'espace de travail contient par défaut deux dossiers :
 
-- `src`: the folder to maintain sources
-- `lib`: the folder to maintain dependencies
+- `src` : le dossier contenant les codes sources.
+- `lib` : le dossier contenant les dépendances.
 
-Meanwhile, the compiled output files will be generated in the `bin` folder by default.
+Les fichiers de sortie compilés seront générés dans le dossier `bin` par défaut.
 
-> If you want to customize the folder structure, open `.vscode/settings.json` and update the related settings there.
+## Documentation
 
-## Dependency Management
+Des fichier txt ont été créés pour documenter le projet, dans ces fichiers vous trouverez:
+    - une description des règles mise en place (REGLES_DU_JEU.txt)
+    - une description de l'architecture du model (fiche_tech.txt)
 
-The `JAVA PROJECTS` view allows you to manage your dependencies. More details can be found [here](https://github.com/microsoft/vscode-java-dependency#manage-dependencies).
+## Auteurs
 
+- TEPE Paulin Kossi
+- BOTRE LARE Aboudou
 
 ---
-Developed as part of the INF2328 Project.
+Développé dans le cadre du projet INF2328.
+

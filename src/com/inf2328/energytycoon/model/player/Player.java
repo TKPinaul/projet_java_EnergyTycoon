@@ -36,6 +36,17 @@ public class Player {
         money += amount;
     }
 
+    // Définition de l'argent
+    public void setMoney(double amount) {
+        this.money = amount;
+    }
+
+    // Suppression de tous les bâtiments
+    public void clearBuildings() {
+        residences.clear();
+        powerPlants.clear();
+    }
+
     // Décrémentation de l'argent
     public boolean spendMoney(double amount) {
         if (money >= amount) {

@@ -9,12 +9,12 @@ import com.inf2328.energytycoon.model.energy.EnergyType;
 
 /*
  * Simulateur de jeu
- * 
+ 
  * @param player : le joueur
  * @param city : la ville
  * @param gameState : l'état du jeu
- * @param controller : le contrôleur
- */
+ * @param controller : le contrôleur*/
+
 public class Simulator {
 
     public static void main(String[] args) {
@@ -53,11 +53,11 @@ public class Simulator {
                     controller.repairPowerPlant(p);
                 }
             }
-
+            // Affichage de l'état du jeu
             System.out.println(gameState);
             System.out.println("=================================");
         }
-
+           // Fin du jeu
         System.out.println("GAME OVER");
     }
 }

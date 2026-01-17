@@ -45,11 +45,16 @@ public class Residence extends Building {
         return type;
     }
 
-    // Augmentation du besoin énergétique au fil du temps
+    // Augmentation du besoin énergétique (appelé toutes les 12h)
     public void increaseEnergyNeedOverTime() {
-        energyNeed *= 1.01; // augmentation plus légère (1% / jour) pour ne pas être injuste
+        energyNeed *= 1.02; // ~4% d'augmentation par jour (2% toutes les 12h)
 
-        // Plafond basé sur le type suivant (ou x1.5 pour le dernier)
+        // Seuil pour suggérer une mise à jour (ex: 50% au dessus de la norme du niveau)
+        if (level < maxLevel && energyNeed > type.getEnergyConsumption() * 1.5) {
+            upgradeSuggested = true;
+        }
+
+        // Plafond strict
         double maxAllowed = type.getEnergyConsumption() * 2.0;
         energyNeed = Math.min(energyNeed, maxAllowed);
     }
@@ -64,9 +69,9 @@ public class Residence extends Building {
         }
 
         if (ratio >= 1) {
-            satisfaction += 1; // bonus faible, difficile à remonter
+            satisfaction += 5; // Bonus de remontée rapide (+5 par heure)
         } else {
-            satisfaction -= (1 - ratio) * 30; // malus
+            satisfaction -= (1 - ratio) * 20; // Malus de -20 points max par heure
         }
         satisfaction = Math.max(0, Math.min(100, satisfaction)); // retourne
     }
@@ -79,7 +84,7 @@ public class Residence extends Building {
     // Surcharge du coût d'amélioration
     @Override
     public double getUpgradeCost() {
-        
+
         // Si le niveau est au max, on ne peut plus améliorer
         if (level >= maxLevel)
             return 0;

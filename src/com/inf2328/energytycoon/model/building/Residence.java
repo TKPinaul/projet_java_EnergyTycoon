@@ -1,40 +1,33 @@
 package com.inf2328.energytycoon.model.building;
+
 import java.util.Random;
 
 /*
  * Class représentant une résidence
-
+ * 
  * @param energyNeed : besoin énergétique de la résidence
  * @param satisfaction : niveau de satisfaction des résidents (0 - 100)
-*/
+ */
 public class Residence extends Building {
 
+    private ResidenceType type;
     private double energyNeed;
     private double satisfaction; // entre 0 et 100
     private final Random random = new Random();
 
-    // Constructeur
-    public Residence(double baseCost, double upgradeCost, int maxLevel) {
-        super(baseCost, upgradeCost, maxLevel);
-        this.energyNeed = generateEnergyNeedForLevel(level);
+    // Constructeur avec niveau initial
+    public Residence(int initialLevel) {
+        super(ResidenceType.fromLevel(initialLevel).getCost(), 0, ResidenceType.SKYSCRAPER.getLevel(), initialLevel);
+
+        this.type = ResidenceType.fromLevel(initialLevel);
+
+        this.energyNeed = type.getEnergyConsumption() * (0.9 + random.nextDouble() * 0.2);
         this.satisfaction = 100.0;
     }
 
-    // récupération du niveau maximum de besoin énergétique
-    public double generateEnergyNeedForLevel(int level) {
-        double min;
-        double max;
-
-        switch (level) {
-            case 1 -> { min = 5; max = 10; }
-            case 2 -> { min = 15; max = 35; }
-            default -> {
-                min = 20 * level;
-                max = 30 * level;
-            }
-        }
-
-        return min + (max - min) * random.nextDouble();
+    // Constructeur par défaut (niveau 1)
+    public Residence() {
+        this(1);
     }
 
     // récupération du besoin énergétique
@@ -47,29 +40,38 @@ public class Residence extends Building {
         return satisfaction;
     }
 
-    // Augmentation du besoin énergétique au fil du temps
-    public void increaseEnergyNeedOverTime() {
-        energyNeed *= 1.03; // augmentation de 3% / jour
-
-        double maxAllowed = getMaxEnergyForLevel(level);
-        energyNeed = Math.min(energyNeed, maxAllowed);
+    // récupération du type de résidence
+    public ResidenceType getType() {
+        return type;
     }
 
-    // Maximum DÉTERMINISTE par niveau
-    private double getMaxEnergyForLevel(int level) {
-        return switch (level) {
-            case 1 -> 10;
-            case 2 -> 35;
-            default -> 30 * level;
-        };
+    // Augmentation du besoin énergétique (appelé toutes les 12h)
+    public void increaseEnergyNeedOverTime() {
+        energyNeed *= 1.02; // ~4% d'augmentation par jour (2% toutes les 12h)
+
+        // Seuil pour suggérer une mise à jour (ex: 50% au dessus de la norme du niveau)
+        if (level < maxLevel && energyNeed > type.getEnergyConsumption() * 1.5) {
+            upgradeSuggested = true;
+        }
+
+        // Plafond strict
+        double maxAllowed = type.getEnergyConsumption() * 2.0;
+        energyNeed = Math.min(energyNeed, maxAllowed);
     }
 
     // Méthode de mise à jour de la satisfaction en fonction de l'énergie
     public void updateSatisfaction(double energyReceived) {
-        if (energyReceived < energyNeed) {
-            satisfaction -= 15; // malus
+        double ratio = 0;
+        if (energyNeed > 0) {
+            ratio = energyReceived / energyNeed;
         } else {
-            satisfaction += 2; // récompence
+            ratio = 1;
+        }
+
+        if (ratio >= 1) {
+            satisfaction += 5; // Bonus de remontée rapide (+5 par heure)
+        } else {
+            satisfaction -= (1 - ratio) * 20; // Malus de -20 points max par heure
         }
         satisfaction = Math.max(0, Math.min(100, satisfaction)); // retourne
     }
@@ -79,24 +81,55 @@ public class Residence extends Building {
         return satisfaction < 40;
     }
 
+    // Surcharge du coût d'amélioration
+    @Override
+    public double getUpgradeCost() {
+
+        // Si le niveau est au max, on ne peut plus améliorer
+        if (level >= maxLevel)
+            return 0;
+        ResidenceType next = ResidenceType.fromLevel(level + 1);
+
+        return next.getCost() - type.getCost();
+    }
+
+    // Surcharge pour obtenir le coût TOTAL d'un niveau (pour achat direct)
+    @Override
+    public double getPriceForLevel(int targetLevel) {
+        return ResidenceType.fromLevel(targetLevel).getCost();
+    }
+
+    // Surcharge du nombre de jours requis pour l'amélioration
+    @Override
+    protected int getRequiredDaysForUpgrade() {
+        return 2;
+    }
+
+    // Surcharge de la vérification de possibilité d'amélioration
+    @Override
+    public boolean canUpgrade() {
+        return super.canUpgrade() && satisfaction > 60;
+    }
+
     // Augmentation du besoin énergétique lors d'un upgrade de la résidence
     @Override
     protected void onUpgrade() {
-        if (satisfaction < 40) return;
-        energyNeed = generateEnergyNeedForLevel(level);
+        // Mise à jour du type
+        this.type = ResidenceType.fromLevel(level);
+        // Mise à jour du coût de base pour la revente ou maintenance (field protected
+        // de Building)
+        this.baseCost = type.getCost();
+        // Mise à jour besoin
+        this.energyNeed = type.getEnergyConsumption() * (0.9 + random.nextDouble() * 0.2);
     }
 
     // Représentation de la résidence
     @Override
     public String toString() {
-        return "Residence{" +
-                "energyNeed=" + energyNeed +
-                ", satisfaction=" + satisfaction +
+        return "Residence (" + type.getLabel() + "){" +
+                "energyNeed=" + String.format("%.2f", energyNeed) +
+                ", satisfaction=" + String.format("%.2f", satisfaction) +
                 ", level=" + level +
-                ", maxLevel=" + maxLevel +
-                ", baseCost=" + baseCost +
-                ", upgradeCost=" + upgradeCost +
                 '}';
     }
-
 }

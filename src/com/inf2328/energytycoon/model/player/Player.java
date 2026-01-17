@@ -47,7 +47,7 @@ public class Player {
         powerPlants.clear();
     }
 
-      // Décrémentation de l'argent
+    // Décrémentation de l'argent
     public boolean spendMoney(double amount) {
         if (money >= amount) {
             money -= amount;

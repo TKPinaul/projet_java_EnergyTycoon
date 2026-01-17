@@ -1,8 +1,7 @@
 package com.inf2328.energytycoon.model.city;
+
 import com.inf2328.energytycoon.model.building.PowerPlant;
 import com.inf2328.energytycoon.model.building.Residence;
-import com.inf2328.energytycoon.model.energy.EnergyType;
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -26,6 +25,16 @@ public class City {
         this.powerPlants = new ArrayList<>();
     }
 
+    // Récupération des résidences
+    public List<Residence> getResidences() {
+        return Collections.unmodifiableList(residences);
+    }
+
+    // Récupération des centrales
+    public List<PowerPlant> getPowerPlants() {
+        return Collections.unmodifiableList(powerPlants);
+    }
+
     // Ajout d'une résidence
     public void addResidence(Residence r) {
         residences.add(r);
@@ -36,10 +45,35 @@ public class City {
         powerPlants.add(p);
     }
 
-    // Augmentation du besoin énergétique des résidences
-    public void increaseEnergyNeedOverTime() {
+    public void clearBuildings() {
+        residences.clear();
+        powerPlants.clear();
+    }
+
+    public int getTotalBuildingsCount() {
+        return residences.size() + powerPlants.size();
+    }
+
+    // Mise à jour de la ville
+    public void update(TimeCycle time) {
+        // Mise à jour de l'état des centrales
+        for (PowerPlant p : powerPlants) {
+            p.updateStatus();
+        }
+        distributeEnergy(time);
+    }
+
+    // Actions journalières (appelé une fois par jour par le Controller)
+    public void performDailyUpdates() {
+        // Augmentation besoins résidences + Mise à jour compteur jours (pour upgrade)
         for (Residence r : residences) {
             r.increaseEnergyNeedOverTime();
+            r.dailyUpdate();
+        }
+
+        // Mise à jour compteur jours centrales
+        for (PowerPlant p : powerPlants) {
+            p.dailyUpdate();
         }
     }
 
@@ -55,68 +89,95 @@ public class City {
     }
 
     // Récupération de la production totale d'énergie (tout centrales confondues)
-    public double getTotalEnergyProduction() {
+    public double getTotalEnergyProduction(TimeCycle time) {
         double total = 0;
 
         for (PowerPlant p : powerPlants) {
             // Ajout de la production de chaque centrale
-            total += p.getProduction().getAmount();
-        }
-        return total;
-    }
-
-    // Production totale par type d'énergie
-    public double getTotalProductionByType(EnergyType type) {
-        double total = 0;
-        for (PowerPlant p : powerPlants) {
-            if (p.getProduction().getType() == type) {
-                total += p.getProduction().getAmount();
-            }
+            total += p.getEffectiveProduction(time);
         }
         return total;
     }
 
     // Distribution de l'énergie et mise à jour des satisfaction des résidents
-    public void distributeEnergy() {
-        double totalEnergy = getTotalEnergyProduction();
-        
-        List<Residence> shuffled = new ArrayList<>(residences);
-        Collections.shuffle(shuffled);
+    private void distributeEnergy(TimeCycle time) {
+        double production = getTotalEnergyProduction(time);
+        double demand = getTotalEnergyDemand();
 
-        for (Residence r : shuffled) {
-            double received = Math.min(r.getEnergyNeed(), totalEnergy);
+        // Distribution de l'énergie
+        for (Residence r : residences) {
+            double received = 0;
+
+            if (demand > 0 && production > 0) {
+                // Calcul de la part d'énergie reçue par résidence
+                received = (r.getEnergyNeed() / demand) * production;
+            }
+
             r.updateSatisfaction(received);
-
-            // On soustrait ce qui a été distribué
-            totalEnergy -= received;
-
-            if (totalEnergy <= 0) break;
-        }       
+        }
     }
 
-    // Récupération des résidences
-    public List<Residence> getResidences() {
-        return residences;
+    // Récupération du ratio de satisfaction des résidences
+    public double getUnsatisfiedRatio(double threshold) {
+        if (residences.isEmpty())
+            return 0;
+
+        int count = 0;
+
+        // Comptage du nombre de résidences avec une satisfaction inférieure au seuil
+        for (Residence r : residences) {
+            if (r.getSatisfaction() < threshold) {
+                count++;
+            }
+        }
+
+        // Retourne le ratio de satisfaction des résidences
+        return (double) count / residences.size();
     }
 
-    // Récupération des centrales
-    public List<PowerPlant> getPowerPlants() {
-        return powerPlants;
+    // Récupération du ratio de satisfaction des résidences à 0
+    public double getZeroSatisfactionRatio() {
+        if (residences.isEmpty())
+            return 0;
+
+        int count = 0;
+
+        // Comptage du nombre de résidences avec une satisfaction à 0
+        for (Residence r : residences) {
+            if (r.getSatisfaction() <= 0) {
+                count++;
+            }
+        }
+
+        // Retourne le ratio de satisfaction des résidences à 0
+        return (double) count / residences.size();
+    }
+
+    // Indicateur de pénurie d'énergie
+    public boolean isInEnergyCrisis(TimeCycle time) {
+        return getTotalEnergyProduction(time) < getTotalEnergyDemand();
     }
 
     // Représentation de la ville
     @Override
     public String toString() {
-        StringBuilder sb = new StringBuilder("City Status:\nResidences:\n");
-        for (Residence r : residences) sb.append("  ").append(r).append("\n");
+        StringBuilder sb = new StringBuilder("City Status:\n");
+
+        sb.append("Residences:\n");
+        for (Residence r : residences) {
+            sb.append("  ").append(r).append("\n");
+        }
 
         sb.append("PowerPlants:\n");
-        for (PowerPlant p : powerPlants) sb.append("  ").append(p).append("\n");
+        for (PowerPlant p : powerPlants) {
+            sb.append("  ").append(p).append("\n");
+        }
 
-        sb.append(String.format("Total Demand: %.2f, Total Production: %.2f\n",
-                getTotalEnergyDemand(), getTotalEnergyProduction()));
+        sb.append(String.format(
+                "Total Demand: %.2f\n",
+                getTotalEnergyDemand()));
+
         return sb.toString();
-
     }
-    
+
 }
